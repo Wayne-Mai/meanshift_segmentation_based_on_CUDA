@@ -20,18 +20,17 @@ using namespace spdlog;
 int main(int argc, char **argv) {
     CImg<float> img(argv[1]), img_ms, img_res;
     CImg<int> img_labels;
-    CImgDisplay display, display2, display3, display4;
+    // CImgDisplay display, display2, display3, display4;
     CudaMsFilter<32, 32, 3> ms;
     CudaFlooding<32, 32, 3, 4> f;
     CudaUnionFind<32, 32, 3, true> uf;
     CudaColorLabels<32, 32> cl;
 
     auto logger = stdout_color_st("logger");
-
     /// read parameters
-    long spatial_radius = strtol(argv[2], nullptr, 10);
-    float color_radius = strtof(argv[3], nullptr);
-    float color_radius_uf = strtof(argv[4], nullptr);
+    long spatial_radius = strtol(argv[2], nullptr, 10); // 13
+    float color_radius = strtof(argv[3], nullptr); // 300
+    float color_radius_uf = strtof(argv[4], nullptr); //1000
 
     logger->info("Initialized");
 
@@ -49,7 +48,7 @@ int main(int argc, char **argv) {
     cudaMalloc(&labels_dev, img.width() * img.height() * sizeof(int));
     cudaMalloc(&labels_dev2, img.width() * img.height() * sizeof(int));
     /// begin capture and calculation
-    display.show();
+    // display.show();
 
     cudaEvent_t begin, end;
     cudaEventCreate(&begin);
@@ -78,14 +77,21 @@ int main(int argc, char **argv) {
     cudaEventElapsedTime(&time, begin, end);
     logger->info("Time: {:.2f} ms | Regions: {:d}", time, label_count);
 
-    while(true) {
-        display.display(img).set_title("captured");
-        display2.display(img_ms).set_title("filtered");
-        display3.display(img_res).set_title("result");
-        display4.display(img_labels).set_title("labels").set_normalization(1);
-        if (img.is_empty() || display.is_keyQ() || display.is_keyESC() || display.is_closed())
-            break;
-    }
+    img.save("raw_img.jpg");
+    img_ms.save("filtered_img.jpg");
+    img_res.save("result_img.jpg");
+    img_labels.save("labeled_img.jpg");
+
+
+
+    // while(true) {
+    //     display.display(img).set_title("captured");
+    //     display2.display(img_ms).set_title("filtered");
+    //     display3.display(img_res).set_title("result");
+    //     display4.display(img_labels).set_title("labels").set_normalization(1);
+    //     if (img.is_empty() || display.is_keyQ() || display.is_keyESC() || display.is_closed())
+    //         break;
+    // }
 
 
     cudaFree(image_dev_1);

@@ -52,3 +52,14 @@ test_path/2.bin
 > flooding模块的测试程序为`cuda_flooding_test` \
 > union find模块(CUDA版本)的测试程序为`cuda_union_find_test` \
 > union find模块(Pthread版本)的测试程序为`pth_union_find_test`
+
+## Example
+
+使用`main_image`模块的样例输出。
+![raw_image](report/mean_shift_test.jpg)
+![result_image](report/result_img.jpg)
+
+#### Implementation details
+![](report/al1.png)
+![](report/al2.png)
+![](report/al3.png)
